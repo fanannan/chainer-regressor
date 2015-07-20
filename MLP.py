@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-from chainer import Variable, FunctionSet, optimizers
+from chainer import Variable, FunctionSet
 import chainer.functions  as F
 import network
 import logging
@@ -19,10 +19,12 @@ class MLP(network.Network):
         self.dropout_ratio = dropout_ratio
         super(MLP, self).__init__(model, optimizer, gpu)
 
+    # 順方向計算
+    # ドロップアウト、ReLUを使用
     def estimate(self, x_data, train):
         x = Variable(x_data)
         hidden1 = F.dropout(F.relu(self.model.layer1(x)), ratio=self.dropout_ratio, train=train)
         hidden2 = F.dropout(F.relu(self.model.layer2(hidden1)), ratio=self.dropout_ratio, train=train)
         estimation  = self.model.layer3(hidden2)
-        return estimation
+        return estimation   # chainer.Variableなので値を取り出すには dataプロパティを使う
 
