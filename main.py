@@ -109,12 +109,6 @@ def execute(name,  train_data, test_data, batch_size, num_inputs, optimizer, num
     else:
         raise Exception("Unknown network structure: "+args.network)
 
-# 確率的勾配降下法で学習させる際の１回分のバッチサイズ
-batch_size = 13
-# 訓練用データの数をバッチサイズの定数倍で決める
-train_size = batch_size * 30
-# 学習の繰り返し回数
-num_epoch   = 100
 
 if __name__ == '__main__':
     # 引数
@@ -126,13 +120,23 @@ if __name__ == '__main__':
     parser.add_argument('--normalize', '-nm', default=False, action='store_true', help='Apply normalizing to [0, 1]')
     parser.add_argument('--scale', '-sc', default=False, action='store_true', help='Apply scaling with mean and standard deviation')
     parser.add_argument('--chart', '-c', default=False, action='store_true', help='Draw and save charts')
+    parser.add_argument('--epoch', '-e', default=100, help='Number of learning epoches')
+    parser.add_argument('--batchsize', '-b', default=13, help='Number of records in a batch')
+    parser.add_argument('--trainsize', '-t', default=390, help='Number of training records in whole dataset')
     args = parser.parse_args()
     # 確認進捗表示用
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
+    # 訓練用データの数をバッチサイズの定数倍で決める
+    train_size = args.trainsize
     # データ読み取り
     (train_data, test_data, info) = reader.read_dataset(train_size, normalize=args.normalize, scale=args.scale)
-    num_inputs = info["SHAPE_TRAIN_X"][1]
-    # モデル実行
+    num_inputs = info["SHAPE_TRAIN_X"][1] # 入力層の要素数
+    # 確率的勾配降下法で学習させる際の１回分のバッチサイズ
+    batch_size = args.batchsize
+    # 学習の繰り返し回数
+    num_epoch = args.epoch
+    # オプティマイザー指定
     optimizer = select_optimizer(args.optimizer)
+    # モデル実行
     execute(args.network, train_data, test_data, batch_size, num_inputs, optimizer, num_epoch, args.gpu, args.chart)
 
