@@ -32,19 +32,16 @@ class DenoisingAutoEncoder(network.Network):
     # 誤差関数は(ミニバッチ内の)平均二乗誤差
     def forward(self, x_data, _, train):
         noised_x_data = self.get_corrupted_inputs(x_data, train) # x_data * np.random.binomial(1, 1 - loss_param, len(x_data[0]))
-        x = Variable(noised_x_data)
-        target = Variable(x_data)
-        m = F.sigmoid(self.model.encode(x))
+        m = self.encode(noised_x_data, train)
         estimation = F.sigmoid(self.model.decode(m))
-        #
-        #m = F.dropout(F.sigmoid(self.model.encode(x)), ratio=self.dropout_ratio, train=train)
-        #estimation = F.dropout(F.sigmoid(self.model.decode(m)), ratio=self.dropout_ratio, train=train)
+        target = Variable(x_data)
         # ２値を返すこと、float32であることを確保することが必要
         #return numpy.array(loss, numpy.float32),
         return F.mean_squared_error(target, estimation), estimation
 
-    def encode(self, x_data):
+    def encode(self, x_data, train):
         x = Variable(x_data)
         m = F.sigmoid(self.model.encode(x))
-        return m.data
+        #m = F.dropout(F.sigmoid(self.model.encode(x)), ratio=self.dropout_ratio, train=train)
+        return m
 

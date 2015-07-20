@@ -26,11 +26,3 @@ class MLP(network.Network):
         estimation  = self.model.layer3(hidden2)
         return estimation
 
-    # 誤差関数は(ミニバッチ内の)平均二乗誤差
-    def forward(self, x_data, y_data, train):
-        estimation  = self.estimate(x_data, train)
-        target = Variable(y_data)
-        # ２値を返すこと、float32であることを確保することが必要
-        #return numpy.array(loss, numpy.float32),
-        return F.mean_squared_error(target, estimation), estimation
-
