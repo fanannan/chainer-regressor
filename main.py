@@ -120,9 +120,9 @@ if __name__ == '__main__':
     parser.add_argument('--normalize', '-nm', default=False, action='store_true', help='Apply normalizing to [0, 1]')
     parser.add_argument('--scale', '-sc', default=False, action='store_true', help='Apply scaling with mean and standard deviation')
     parser.add_argument('--chart', '-c', default=False, action='store_true', help='Draw and save charts')
-    parser.add_argument('--epoch', '-e', default=100, help='Number of learning epoches')
-    parser.add_argument('--batchsize', '-b', default=13, help='Number of records in a batch')
-    parser.add_argument('--trainsize', '-t', default=390, help='Number of training records in whole dataset')
+    parser.add_argument('--epoch', '-e', default=100, type=int, help='Number of learning epoches')
+    parser.add_argument('--batchsize', '-b', default=13, type=int, help='Number of records in a batch')
+    parser.add_argument('--trainsize', '-t', default=390, type=int, help='Number of training records in whole dataset')
     args = parser.parse_args()
     # 確認進捗表示用
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
