@@ -65,7 +65,8 @@ def execute(name,  train_data, test_data, batch_size, num_inputs, optimizer, num
         import MLP
         num_units   = 30 # 中間層の数
         dropout_ratio = 0.5 # ドロップアウトの確率
-        network = MLP.MLP(num_inputs, num_units, dropout_ratio, optimizer, gpu)
+        corruption_level = 0.1 # ゼロノイズの確率
+        network = MLP.MLP(num_inputs, num_units, dropout_ratio, corruption_level, optimizer, gpu)
         run(name, network, train_data, test_data, batch_size, num_epoch, False, test=True, chart=chart)
     elif name == "dA":
         # -scを指定して、スケーリングしないとパフォーマンスが出ない模様
@@ -82,7 +83,8 @@ def execute(name,  train_data, test_data, batch_size, num_inputs, optimizer, num
         import MLP
         num_top_units = 12 # 中間層の数
         top_dropout_ratio = 0.05 # ドロップアウトの確率
-        top_network = MLP.MLP(base_x_train.shape[1], num_top_units, top_dropout_ratio, optimizer, gpu)
+        top_corruption_level = 0.05 # ゼロノイズの確率
+        top_network = MLP.MLP(base_x_train.shape[1], num_top_units, top_dropout_ratio, top_corruption_level, optimizer, gpu)
         run(name+'_finetune', top_network, (base_x_train, train_data[1]), (base_x_test, test_data[1]), batch_size, num_epoch, False, test=True, chart=chart)
     elif name == "SdA":
         # 次元削減
@@ -102,7 +104,8 @@ def execute(name,  train_data, test_data, batch_size, num_inputs, optimizer, num
         import MLP
         num_top_units = 12 # 中間層の数
         top_dropout_ratio = 0.05 # ドロップアウトの確率
-        top_network = MLP.MLP(base_x_train2.shape[1], num_top_units, top_dropout_ratio, optimizer, gpu)
+        top_corruption_level = 0.05 # ゼロノイズの確率
+        top_network = MLP.MLP(base_x_train2.shape[1], num_top_units, top_dropout_ratio, top_corruption_level, optimizer, gpu)
         run(name+'_finetune', top_network, (base_x_train2, train_data[1]), (base_x_test2, test_data[1]), batch_size, num_epoch, False, test=True, chart=chart)
     else:
         raise Exception("Unknown network structure: "+args.network)

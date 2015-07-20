@@ -10,14 +10,13 @@ import logging
 # 多層パーセプトロンモデル
 class MLP(network.Network):
 
-    def __init__(self, num_inputs, num_units, dropout_ratio, optimizer, gpu):
+    def __init__(self, num_inputs, num_units, dropout_ratio, corruption_level, optimizer, gpu):
         model = FunctionSet(
             layer1=F.Linear(num_inputs, num_units),
             layer2=F.Linear(num_units, num_units),
             layer3=F.Linear(num_units, 1))  # 回帰用出力
         self.layers = [model.layer1, model.layer2, model.layer3]
-        self.dropout_ratio = dropout_ratio
-        super(MLP, self).__init__(model, optimizer, gpu)
+        super(MLP, self).__init__(model, optimizer, dropout_ratio, corruption_level, gpu)
 
     # 順方向計算
     # ドロップアウト、ReLUを使用

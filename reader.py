@@ -10,8 +10,8 @@ import logging
 def read_dataset(train_size, scale=False, normalize=False):
     logging.info('fetching the dataset')
     #
-    #d = load_diabetes() # 糖尿病
-    d = sklearn.datasets.load_boston() # ボストン住宅価格
+    d = sklearn.datasets.load_diabetes() # 糖尿病
+    #d = sklearn.datasets.load_boston() # ボストン住宅価格
     #
     data = d['data'].astype(np.float32)
     target = d['target'].astype(np.float32).reshape(len(d['target']), 1)

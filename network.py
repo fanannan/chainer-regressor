@@ -10,23 +10,36 @@ import logging
 class Network(object):
 
     # 初期化
-    def __init__(self, model, optimizer, gpu):
+    def __init__(self, model, optimizer, dropout_ratio, corruption_level, gpu):
         self.model = model
         #self.layers = []
+        self.dropout_ratio = dropout_ratio
+        self.corruption_level = corruption_level
         self.optimizer = optimizer
         self.optimizer.setup(self.model.collect_parameters())
+        self.rng = np.random.RandomState(1)
         self.gpu = gpu
         if gpu>=0:
             cuda.init(gpu)
             model.to_gpu()
 
+    # ノイズ追加
+    def get_corrupted_inputs(self, x_data, train=True):
+	    if train:
+            # x_data * np.random.binomial(1, 1 - loss_param, len(x_data[0]))
+		    ret = self.rng.binomial(size=x_data.shape, n=1, p=1.0-self.corruption_level) * x_data
+		    return ret.astype(np.float32)
+	    else:
+		    return x_data
+
     # 誤差関数の基本形
     # 回帰問題用なので、原則として、(ミニバッチ内の)平均二乗誤差
+    # 継承したクラスでは、２値を返すこと、ひとつ目の値がfloat32であることを確保することが必要
+    # return numpy.array(loss, numpy.float32),
     def forward(self, x_data, y_data, train):
-        estimation  = self.estimate(x_data, train)
+        noised_x_data = self.get_corrupted_inputs(x_data, train) 
+        estimation  = self.estimate(noised_x_data, train)
         target = Variable(y_data)
-        #継承したクラスでは、２値を返すこと、ひとつ目の値がfloat32であることを確保することが必要
-        #return numpy.array(loss, numpy.float32),
         return F.mean_squared_error(target, estimation), estimation
 
     # 画像化用ウェイト取得
