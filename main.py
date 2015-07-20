@@ -70,6 +70,7 @@ def execute(name,  train_data, test_data, batch_size, num_inputs, optimizer, num
         network = MLP.MLP(num_inputs, num_units, dropout_ratio, optimizer, gpu)
         run(name, network, train_data, test_data, batch_size, num_epoch, False, test=True, chart=chart)
     elif name == "dA":
+        # -scを指定して、スケーリングしないとパフォーマンスが出ない模様
         # 次元削減
         import dA
         num_base_units = 7 # 中間層の数
@@ -113,10 +114,11 @@ batch_size = 13
 # 訓練用データの数をバッチサイズの定数倍で決める
 train_size = batch_size * 30
 # 学習の繰り返し回数
-num_epoch   = 1000
+num_epoch   = 100
 
 if __name__ == '__main__':
     # 引数
+    # 例: python main.py -n dA -sc -c
     parser = argparse.ArgumentParser(description='Chainer example')
     parser.add_argument('--gpu', '-g', default=-1, type=int, help='GPU ID (negative value indicates CPU)')
     parser.add_argument('--network', '-n', default="MLP", type=str, help='Network structure')
