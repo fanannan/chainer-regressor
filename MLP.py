@@ -19,13 +19,17 @@ class MLP(network.Network):
         self.dropout_ratio = dropout_ratio
         super(MLP, self).__init__(model, optimizer, gpu)
 
-    # 誤差関数は(ミニバッチ内の)平均二乗誤差
-    def forward(self, x_data, y_data, train):
+    def estimate(self, x_data, train):
         x = Variable(x_data)
-        target = Variable(y_data)
         hidden1 = F.dropout(F.relu(self.model.layer1(x)), ratio=self.dropout_ratio, train=train)
         hidden2 = F.dropout(F.relu(self.model.layer2(hidden1)), ratio=self.dropout_ratio, train=train)
         estimation  = self.model.layer3(hidden2)
+        return estimation
+
+    # 誤差関数は(ミニバッチ内の)平均二乗誤差
+    def forward(self, x_data, y_data, train):
+        estimation  = self.estimate(x_data, train)
+        target = Variable(y_data)
         # ２値を返すこと、float32であることを確保することが必要
         #return numpy.array(loss, numpy.float32),
         return F.mean_squared_error(target, estimation), estimation
