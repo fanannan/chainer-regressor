@@ -1,11 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-This code is a Chainer example to train a multi-layer perceptron with diabetes dataset,
-based on the code by mottodora (https://gist.github.com/mottodora/a9c46754cf555a68edb7)
-"""
-
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
@@ -13,6 +8,7 @@ from chainer import optimizers
 import logging
 import reader
 
+# オプティマイザーの選択
 def select_optimizer(name):
     if name == "AdaGrad":
         optimizer = optimizers.AdaGrad(lr=0.001)
@@ -30,6 +26,7 @@ def select_optimizer(name):
         raise Exception("Unknown network optimizer: "+args.optimizer)
     return optimizer
 
+# ネットワーク構築実行とその状況チャート作成
 def run(name, network, train_data, test_data, batch_size, num_epoch, pretune, test=False, chart=True):
     draw_process_chart = False
     if chart:
@@ -62,6 +59,7 @@ def run(name, network, train_data, test_data, batch_size, num_epoch, pretune, te
         draw_result_chart(name+'_test', test_data)
     return network
 
+# 各種ネットワーク構造設定と構築
 def execute(name,  train_data, test_data, batch_size, num_inputs, optimizer, num_epoch, gpu, chart):
     if name == "MLP":
         import MLP
