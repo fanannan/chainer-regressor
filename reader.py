@@ -14,7 +14,7 @@ def read_dataset(train_size, scale=False, normalize=False):
     d = sklearn.datasets.load_boston() # ボストン住宅価格
     #
     data = d['data'].astype(np.float32)
-    target = d['target'].astype(np.float32).reshape(len(diabetes['target']), 1)
+    target = d['target'].astype(np.float32).reshape(len(d['target']), 1)
     #"Chainerのmnist.pyだと下記ののような書き方になっているが、ミニバッチの数が2以上だと動かない"らしい 
     #target = diabetes['target'].astype(np.float32) 
     # 本来訓練データで標準化・正規化して、そのパラメータをテストデータに適用すべき
