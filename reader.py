@@ -2,16 +2,19 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-from sklearn.datasets import load_diabetes
+import sklearn.datasets
 from sklearn import preprocessing
 import logging
 
 # データ読み込み
 def read_dataset(train_size, scale=False, normalize=False):
-    logging.info('fetching the diabetes dataset')
-    diabetes = load_diabetes()
-    data = diabetes['data'].astype(np.float32)
-    target = diabetes['target'].astype(np.float32).reshape(len(diabetes['target']), 1)
+    logging.info('fetching the dataset')
+    #
+    #d = load_diabetes() # 糖尿病
+    d = sklearn.datasets.load_boston() # ボストン住宅価格
+    #
+    data = d['data'].astype(np.float32)
+    target = d['target'].astype(np.float32).reshape(len(diabetes['target']), 1)
     #"Chainerのmnist.pyだと下記ののような書き方になっているが、ミニバッチの数が2以上だと動かない"らしい 
     #target = diabetes['target'].astype(np.float32) 
     # 本来訓練データで標準化・正規化して、そのパラメータをテストデータに適用すべき
